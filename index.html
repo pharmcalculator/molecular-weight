@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Molecular Weight Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Molecular Weight Calculator</h1>
+    <label for="formula">Enter Molecular Formula (e.g., H2O, C6H12O6):</label>
+    <input type="text" id="formula" placeholder="Molecular Formula">
+    <button id="calculate">Calculate Molecular Weight</button>
+    <h2 id="result"></h2>
+
+    <script>
+        const atomicWeights = {
+            'H': 1.008,
+            'C': 12.011,
+            'O': 15.999,
+            'N': 14.007,
+            'S': 32.06,
+            'P': 30.974,
+            // Add more elements as needed
+        };
+
+        function calculateMolecularWeight(formula) {
+            const regex = /([A-Z][a-z]*)(\d*)/g;
+            let match;
+            let weight = 0;
+
+            while ((match = regex.exec(formula)) !== null) {
+                const element = match[1];
+                const quantity = match[2] ? parseInt(match[2]) : 1;
+                weight += (atomicWeights[element] || 0) * quantity;
+            }
+
+            return weight;
+        }
+
+        document.getElementById('calculate').addEventListener('click', () => {
+            const formula = document.getElementById('formula').value;
+            const weight = calculateMolecularWeight(formula);
+            document.getElementById('result').innerText = `Molecular Weight: ${weight.toFixed(3)} g/mol`;
+        });
+    </script>
+</body>
+</html>
