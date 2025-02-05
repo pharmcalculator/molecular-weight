@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Molecular Weight Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+        }
+        .container {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        input[type="text"] {
+            width: 90%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 24px; /* Enlarged font size */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 18px; /* Enlarged font size */
+            background-color: #4CAF50; /* Green color */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 20px; /* Larger font for results */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Molecular Weight Calculator</h1>
+    <h2>Enter Chemical Formula</h2>
+    <input type="text" id="formula" placeholder="e.g., H2O, C6H12O6" />
+
+    <button onclick="calculateMolecularWeight()">Calculate</button>
+
+    <div id="results" class="result"></div>
+</div>
+
+<script>
+    const atomicWeights = {
+        H: 1.00794,
+        He: 4.002602,
+        Li: 6.941,
+        Be: 9.012182,
+        B: 10.811,
+        C: 12.0107,
+        N: 14.0067,
+        O: 15.999,
+        F: 18.9984032,
+        Ne: 20.1797,
+        Na: 22.98976928,
+        Mg: 24.3050,
+        Al: 26.9815385,
+        Si: 28.0855,
+        P: 30.973762,
+        S: 32.065,
+        Cl: 35.453,
+        Ar: 39.948,
+        K: 39.0983,
+        Ca: 40.078,
+        Sc: 44.955908,
+        Ti: 47.867,
+        V: 50.9415,
+        Cr: 51.9961,
+        Mn: 54.938044,
+        Fe: 55.845,
+        Co: 58.933194,
+        Ni: 58.6934,
+        Cu: 63.546,
+        Zn: 65.38,
+        Ga: 69.723,
+        Ge: 72.630,
+        As: 74.921595,
+        Se: 78.971,
+        Br: 79.904,
+        Kr: 83.798,
+        Rb: 85.4678,
+        Sr: 87.62,
+        Y: 88.90585,
+        Zr: 91.224,
+        Nb: 92.90637,
+        Mo: 95.94,
+        Tc: 98,
+        Ru: 101.07,
+        Rh: 102.90550,
+        Pd: 106.42,
+        Ag: 107.8682,
+        Cd: 112.414,
+        In: 114.818,
+        Sn: 118.710,
+        Sb: 121.760,
+        Te: 127.60,
+        I: 126.90447,
+        Xe: 131.293,
+        Cs: 132.90545196,
+        Ba: 137.327,
+        La: 138.90547,
+        Ce: 140.116,
+        Pr: 140.90766,
+        Nd: 144.242,
+        Pm: 145,
+        Sm: 150.36,
+        Eu: 151.964,
+        Gd: 157.25,
+        Tb: 158.92535,
+        Dy: 162.500,
+        Ho: 164.93033,
+        Er: 167.259,
+        Tm: 168.93422,
+        Yb: 173.04,
+        Lu: 174.9668,
+        Hf: 178.49,
+        Ta: 180.94788,
+        W: 183.84,
+        Re: 186.207,
+        Os: 190.23,
+        Ir: 192.217,
+        Pt: 195.084,
+        Au: 196.966569,
+        Hg: 200.592,
+        Tl: 204.38,
+        Pb: 207.2,
+        Bi: 208.98040,
+        Po: 209,
+        At: 210,
+        Rn: 222,
+        Fr: 223,
+        Ra: 226,
+        Ac: 227,
+        Th: 232.0381,
+        Pa: 231.03588,
+        U: 238.02891,
+        Np: 237,
+        Pu: 244,
+        Am: 243,
+        Cm: 247,
+        Bk: 247,
+        Cf: 251,
+        Es: 252,
+        Fm: 257,
+        Md: 258,
+        No: 259,
+        Lr: 262,
+        Rf: 267,
+        Db: 270,
+        Sg: 271,
+        Bh: 270,
+        Hs: 277,
+        Mt: 276,
+        Ds: 281,
+        Rg: 282,
+        Cn: 285,
+        Nh: 286,
+        Fl: 289,
+        Mc: 290,
+        Lv: 293,
+        Ts: 294,
+        Og: 294
+    };
+
+    function calculateMolecularWeight() {
+        const formula = document.getElementById('formula').value;
+        const regex = /([A-Z][a-z]*)(\d*)/g;
+        let match;
+        let totalWeight = 0;
+
+        while ((match = regex.exec(formula)) !== null) {
+            const element = match[1];
+            const count = match[2] ? parseInt(match[2]) : 1;
+            const atomicWeight = atomicWeights[element];
+
+            if (atomicWeight) {
+                totalWeight += atomicWeight * count;
+            } else {
+                document.getElementById('results').innerText = `Element ${element} not found.`;
+                return;
+            }
+        }
+
+        document.getElementById('results').innerText = `Molecular Weight: ${totalWeight.toFixed(4)} g/mol`;
+    }
+</script>
+
+</body>
+</html>
